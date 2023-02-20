@@ -1,0 +1,5 @@
+venv
+.idea
+get_screens/TODO.txt
+get_screens/test.py
+get_screens/sources.txt
