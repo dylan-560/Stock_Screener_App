@@ -1,15 +1,12 @@
-import json
 import random
 import helper_functions
 import logging
 import db_connect
-import os
-import datetime
 import pandas as pd
 from constants import *
 from key_lists import *
 from data_sources import QuotesData, StockStats, IntradayCandles
-import constants
+
 logging.basicConfig(level=logging.INFO,
                     format='%(levelname)s:%(message)s')#,filename='logfile.log')
 try:
@@ -793,6 +790,8 @@ def run_EOD():
         return screen_list
 
     def finalize_results(screen_list):
+        logging.info('FINALIZING RESULTS')
+        logging.info('-----------------------------------------------------------------')
 
         for screen in screen_list:
             screen.finalize_data()
@@ -819,7 +818,7 @@ def run_EOD():
         except Exception as e:
             logging.error(f'{e}, problems with database connections')
             helper_functions.send_SMS(msg=error_msg)
-            helper_functions.save_to_txt(screen_list=save_list,label='EOD')
+            helper_functions.save_to_txt(screen_list=save_list, label='EOD')
 
         finally:
             if db_connection.is_connected():
@@ -843,6 +842,9 @@ def run_EOD():
                 db_connection.close()
 
     ###############################################################
+    if not helper_functions.is_trading_day(curr_date=TODAY):
+        logging.info('IS NOT A TRADING DAY')
+        return
 
     logging.info('-----------------------------------------------------------------')
     logging.info('\t\t ' + str(datetime.datetime.now()))

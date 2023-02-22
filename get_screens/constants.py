@@ -16,7 +16,7 @@ SEND_SMS = False
 RATE_LIMITING = True
 
 TODAY = datetime.datetime.today() #2023-02-15 00:03:58.779407
-# TODAY = datetime.datetime.today() - datetime.timedelta(days=2)
+# TODAY = datetime.datetime.today() - datetime.timedelta(days=4)
 
 
 

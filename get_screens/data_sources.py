@@ -5,11 +5,9 @@ import pandas as pd
 import requests
 import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
-import random
 from user_agent import generate_user_agent
 import yfinance as yf
 import json
-import db_connect
 import helper_functions
 import logging
 from constants import TODAY, MAX_CONSEC_TRIES,RATE_LIMITING
@@ -29,7 +27,7 @@ def rate_limiter(key=None):
             # set last used if there is no value for it
             elif not key['last_used']:
                 logging.info(f'\t no time set for last used, setting...')
-                key['last_used'] = datetime.datetime.now() # consider using unix time
+                key['last_used'] = datetime.datetime.now()
 
             # wait appropriate seconds given when the key was last used and the assigned rate limit
             elif key['last_used']:
@@ -42,6 +40,8 @@ def rate_limiter(key=None):
                     time.sleep(wait_secs)
                 else:
                     logging.info(f'\t {wait_secs}, dont need to sleep')
+
+                key['last_used'] = datetime.datetime.now()
 
         except Exception as e:
             logging.error(f'RATE LIMITER ERROR: {e}')
@@ -207,9 +207,9 @@ class Screeners():
                                                    num_convert_names=num_convert_keys)
 
                 ret_list = helper_functions.normalize_names(input_list=ret_list,
-                                           names_conversion_dict=name_conversions)
+                                                            names_conversion_dict=name_conversions)
 
-                ret_list = helper_functions.label_dicts_in_list(source_name='finviz',input_list=ret_list)
+                ret_list = helper_functions.label_dicts_in_list(source_name='finviz', input_list=ret_list)
 
                 logging.info('\t ...finviz screener complete')
                 return ret_list
@@ -251,8 +251,8 @@ class Screeners():
             resp_dict = json.loads(response.text)
             ret_list = clean_tradingview_screener(input_dict=resp_dict)
             ret_list = helper_functions.normalize_names(input_list=ret_list,
-                                       names_conversion_dict=name_conversions)
-            ret_list = helper_functions.label_dicts_in_list(source_name='tradingview',input_list=ret_list)
+                                                        names_conversion_dict=name_conversions)
+            ret_list = helper_functions.label_dicts_in_list(source_name='tradingview', input_list=ret_list)
 
             logging.info(f' \t ...tradingview screener, key:{key_num} complete')
 
